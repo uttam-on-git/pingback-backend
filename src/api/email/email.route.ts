@@ -1,5 +1,5 @@
-import { Router } from "express"
-import { trackEmailOpen } from "./email.controller";
+import { Router } from 'express';
+import { trackEmailOpen } from './email.controller';
 
 const router = Router();
 

@@ -9,7 +9,7 @@ module.exports = [
       'node_modules/*',
       '**/node_modules/@prisma/client/**',
       'src/generated/*',
-      'eslint.config.js'
+      'eslint.config.js',
     ],
   },
 

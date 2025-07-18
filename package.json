@@ -14,7 +14,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "lint": "eslint . --cache",
     "lint:fix": "eslint . --cache --fix",
-    "format": "prettier --write",
+    "format": "prettier --write .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
