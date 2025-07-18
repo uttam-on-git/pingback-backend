@@ -60,11 +60,15 @@ export const sendTrackedEmail = async (req: Request, res: Response) => {
     });
 
     // construct the tracking pixel URL
-    const trackingPixelUrl = `http://localhost:3000/api/email/track/${trackedEmail.id}`;
+    const trackingPixelUrl = `${process.env.BACKEND_URL}/api/email/track/${trackedEmail.id}`;
     const trackingPixelHtml = `<img src="${trackingPixelUrl}" width="1" height="1" style="display:none;" />`;
 
     //inject pixel into the email body
-    const emailBodyWithPixel = `${body}<br>${trackingPixelHtml}`;
+    const emailBodyWithPixel = `${trackingPixelHtml}${body}`;
+
+    console.log('--- HTML being sent to Nodemailer ---');
+    console.log(emailBodyWithPixel);
+    console.log('------------------------------------');
 
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -90,5 +94,31 @@ export const sendTrackedEmail = async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ message: 'An error occurred while sending the email.' });
+  }
+};
+
+export const getSentEmails = async (req: Request, res: Response) => {
+  const userId = req.user!.id;
+  try {
+    const emails = await prisma.trackedEmail.findMany({
+      where: {
+        userId: userId,
+      },
+      // count of the related 'opens' for each email
+      include: {
+        _count: {
+          select: { opens: true },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    res.status(200).json(emails);
+  } catch (error) {
+    console.error('Error fetching sent emails:', error);
+    res
+      .status(500)
+      .json({ message: 'An error occurred while fetching emails.' });
   }
 };

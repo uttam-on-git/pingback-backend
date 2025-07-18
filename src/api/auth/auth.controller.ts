@@ -20,5 +20,5 @@ export const generateToken = (req: Request, res: Response) => {
     expiresIn: '1d', // expires in 1 day
   });
 
-  res.redirect(`http://localhost:5173/auth/callback?token=${token}`);
+  res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}`);
 };
