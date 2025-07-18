@@ -14,6 +14,10 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
+        const email = profile.emails?.[0]?.value;
+        if (!email) {
+          return done(new Error('No email found in Google profile'), false);
+        }
         let user = await prisma.user.findUnique({
           where: { googleId: profile.id },
         });
@@ -26,7 +30,7 @@ passport.use(
             data: {
               googleId: profile.id,
               name: profile.displayName,
-              email: profile.emails?.[0].value!,
+              email: email,
             },
           });
           return done(null, user);
