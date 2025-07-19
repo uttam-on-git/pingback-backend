@@ -1,11 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { PrismaClient } from '@prisma/client';
 
+const prisma = new PrismaClient();
 interface TokenPayload {
   id: string;
 }
 
-export const ensureAuthenticated = (
+export const ensureAuthenticated = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -25,8 +27,15 @@ export const ensureAuthenticated = (
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const { id } = decoded as TokenPayload;
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
 
-    req.user = { id };
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+
+    req.user = user;
 
     return next();
   } catch {
