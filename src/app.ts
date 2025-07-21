@@ -4,8 +4,17 @@ import passport from 'passport';
 import './config/passport-setup';
 import emailRoutes from './api/email/email.route';
 import authRoutes from './api/auth/auth.route';
+import rateLimit from 'express-rate-limit';
 
 const app = express();
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+});
 
 //allowed origins
 const allowedOrigins = [process.env.FRONTEND_URL, 'http://localhost:5173'];
@@ -27,6 +36,7 @@ const corsOptions = {
 };
 
 //middleware
+app.use('/api', limiter);
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(passport.initialize()); // initialize passport
