@@ -3,6 +3,7 @@ import {
   sendTrackedEmail,
   trackEmailOpen,
   getSentEmails,
+  getEmailDetails,
 } from './email.controller';
 import { ensureAuthenticated } from '../../middleware/ensureAuthenticated';
 import { validate } from '../../middleware/validateRequest';
@@ -20,5 +21,6 @@ router.post(
   sendTrackedEmail,
 );
 router.get('/', ensureAuthenticated, getSentEmails);
+router.get('/:id', ensureAuthenticated, getEmailDetails);
 
 export default router;

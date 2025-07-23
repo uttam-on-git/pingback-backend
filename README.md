@@ -13,26 +13,26 @@ This repository contains the backend server for **PingBack**, a simple yet power
 
 ## ✨ Features
 
--   **Secure User Authentication:** Google OAuth 2.0 for seamless and secure user sign-in.
--   **JWT-Based Sessions:** Uses JSON Web Tokens for stateless and secure API authentication.
--   **Email Tracking:** Injects a 1x1 tracking pixel into outgoing emails to monitor opens.
--   **Analytics API:** Endpoints to retrieve a list of sent emails and their open counts.
--   **Robust Security:** Includes rate limiting to prevent abuse and input validation with Zod.
--   **Persistent Database:** Uses Docker Compose for a consistent and persistent local PostgreSQL database.
+- **Secure User Authentication:** Google OAuth 2.0 for seamless and secure user sign-in.
+- **JWT-Based Sessions:** Uses JSON Web Tokens for stateless and secure API authentication.
+- **Email Tracking:** Injects a 1x1 tracking pixel into outgoing emails to monitor opens.
+- **Analytics API:** Endpoints to retrieve a list of sent emails and their open counts.
+- **Robust Security:** Includes rate limiting to prevent abuse and input validation with Zod.
+- **Persistent Database:** Uses Docker Compose for a consistent and persistent local PostgreSQL database.
 
 ---
 
 ## 🛠️ Tech Stack
 
--   **Runtime:** [Node.js](https://nodejs.org/)
--   **Framework:** [Express.js](https://expressjs.com/)
--   **Language:** [TypeScript](https://www.typescriptlang.org/)
--   **Database:** [PostgreSQL](https://www.postgresql.org/)
--   **ORM:** [Prisma](https://www.prisma.io/)
--   **Authentication:** [Passport.js](http://www.passportjs.org/) (Google OAuth 2.0 Strategy)
--   **Email Sending:** [Nodemailer](https://nodemailer.com/)
--   **Validation:** [Zod](https://zod.dev/)
--   **Security:** [express-rate-limit](https://www.npmjs.com/package/express-rate-limit)
+- **Runtime:** [Node.js](https://nodejs.org/)
+- **Framework:** [Express.js](https://expressjs.com/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Database:** [PostgreSQL](https://www.postgresql.org/)
+- **ORM:** [Prisma](https://www.prisma.io/)
+- **Authentication:** [Passport.js](http://www.passportjs.org/) (Google OAuth 2.0 Strategy)
+- **Email Sending:** [Nodemailer](https://nodemailer.com/)
+- **Validation:** [Zod](https://zod.dev/)
+- **Security:** [express-rate-limit](https://www.npmjs.com/package/express-rate-limit)
 
 ---
 
@@ -42,50 +42,52 @@ This section will guide you through setting up a local development environment.
 
 ### Prerequisites
 
--   [Node.js](https://nodejs.org/) (v18 or later recommended)
--   [Docker](https://www.docker.com/products/docker-desktop/) and Docker Compose
--   A code editor like [VS Code](https://code.visualstudio.com/)
+- [Node.js](https://nodejs.org/) (v18 or later recommended)
+- [Docker](https://www.docker.com/products/docker-desktop/) and Docker Compose
+- A code editor like [VS Code](https://code.visualstudio.com/)
 
 ### Installation & Setup
 
 1.  **Clone the repository:**
+
     ```bash
     git clone https://github.com/uttam-on-git/pingback-backend.git
     cd pingback-backend
     ```
 
 2.  **Install dependencies:**
+
     ```bash
     npm install
     ```
 
 3.  **Set up environment variables:**
-    -   Make a copy of the example environment file:
-        ```bash
-        cp .env.example .env
-        ```
-    -   Open the `.env` file and fill in all the required values. See the "Environment Variables" section below for a full explanation of each key.
+    - Make a copy of the example environment file:
+      ```bash
+      cp .env.example .env
+      ```
+    - Open the `.env` file and fill in all the required values. See the "Environment Variables" section below for a full explanation of each key.
 
 4.  **Start the database:**
-    -   Make sure Docker is running on your machine.
-    -   Start the container in the background:
-        ```bash
-        docker-compose up -d
-        ```
+    - Make sure Docker is running on your machine.
+    - Start the container in the background:
+      ```bash
+      docker-compose up -d
+      ```
 
 5.  **Run database migrations:**
-    -   This will create all the necessary tables in your database.
-        ```bash
-        npx prisma migrate dev
-        ```
+    - This will create all the necessary tables in your database.
+      ```bash
+      npx prisma migrate dev
+      ```
 
 ### Running the Application
 
--   To start the dev server with hot-reloading:
-    ```bash
-    npm run dev
-    ```
--   The application will be available at `http://localhost:3000`.
+- To start the dev server with hot-reloading:
+  ```bash
+  npm run dev
+  ```
+- The application will be available at `http://localhost:3000`.
 
 ---
 
@@ -93,14 +95,14 @@ This section will guide you through setting up a local development environment.
 
 All API routes are prefixed with `/api`.
 
-| Method | Route                       | Protection | Description                                       |
-| :----- | :-------------------------- | :--------- | :------------------------------------------------ |
-| `GET`  | `/auth/google`              | Public     | Initiates the Google OAuth 2.0 sign-in flow.      |
-| `GET`  | `/auth/google/callback`     | Public     | Callback URL for Google to redirect to after auth.|
-| `POST` | `/email/send`               | Private    | Sends a new tracked email.                        |
-| `GET`  | `/email`                    | Private    | Retrieves a list of all emails sent by the user.  |
-| `GET`  | `/email/:id`                | Private    | Retrieves the details for a single sent email.    |
-| `GET`  | `/email/track/:emailId`     | Public     | The tracking pixel endpoint.                      |
+| Method | Route                   | Protection | Description                                        |
+| :----- | :---------------------- | :--------- | :------------------------------------------------- |
+| `GET`  | `/auth/google`          | Public     | Initiates the Google OAuth 2.0 sign-in flow.       |
+| `GET`  | `/auth/google/callback` | Public     | Callback URL for Google to redirect to after auth. |
+| `POST` | `/email/send`           | Private    | Sends a new tracked email.                         |
+| `GET`  | `/email`                | Private    | Retrieves a list of all emails sent by the user.   |
+| `GET`  | `/email/:id`            | Private    | Retrieves the details for a single sent email.     |
+| `GET`  | `/email/track/:emailId` | Public     | The tracking pixel endpoint.                       |
 
 ---
 
@@ -108,16 +110,16 @@ All API routes are prefixed with `/api`.
 
 The following variables are required for the application to run. They should be placed in a `.env` file in the project root.
 
-| Variable               | Description                                                              |
-| :--------------------- | :----------------------------------------------------------------------- |
-| `DATABASE_URL`         | The full connection string for your PostgreSQL database.                 |
-| `GOOGLE_CLIENT_ID`     | Your OAuth 2.0 Client ID from the Google Cloud Console.                  |
-| `GOOGLE_CLIENT_SECRET` | Your OAuth 2.0 Client Secret from the Google Cloud Console.              |
-| `JWT_SECRET`           | A long, random, secret string used for signing authentication tokens.    |
-| `GMAIL_USER`           | The Gmail address used to send emails.                                   |
-| `GMAIL_APP_PASSWORD`   | The 16-character Google App Password for Nodemailer.                     |
-| `BACKEND_URL`          | The public URL of the backend (for tracking pixels).                     |
-| `FRONTEND_URL`         | The public URL of the frontend (for auth redirects).                     |
+| Variable               | Description                                                           |
+| :--------------------- | :-------------------------------------------------------------------- |
+| `DATABASE_URL`         | The full connection string for your PostgreSQL database.              |
+| `GOOGLE_CLIENT_ID`     | Your OAuth 2.0 Client ID from the Google Cloud Console.               |
+| `GOOGLE_CLIENT_SECRET` | Your OAuth 2.0 Client Secret from the Google Cloud Console.           |
+| `JWT_SECRET`           | A long, random, secret string used for signing authentication tokens. |
+| `GMAIL_USER`           | The Gmail address used to send emails.                                |
+| `GMAIL_APP_PASSWORD`   | The 16-character Google App Password for Nodemailer.                  |
+| `BACKEND_URL`          | The public URL of the backend (for tracking pixels).                  |
+| `FRONTEND_URL`         | The public URL of the frontend (for auth redirects).                  |
 
 ---
 

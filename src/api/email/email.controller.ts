@@ -122,3 +122,34 @@ export const getSentEmails = async (req: Request, res: Response) => {
       .json({ message: 'An error occurred while fetching emails.' });
   }
 };
+
+export const getEmailDetails = async (req: Request, res: Response) => {
+  const userId = req.user!.id;
+  const { id: emailId } = req.params;
+
+  try {
+    const email = await prisma.trackedEmail.findUnique({
+      where: {
+        id: emailId,
+      },
+      include: {
+        opens: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
+      },
+    });
+
+    if (!email || email.userId !== userId) {
+      return res.status(404).json({ message: 'Email not found' });
+    }
+
+    res.status(200).json(email);
+  } catch (error: unknown) {
+    console.error('Error fetching email details:', error);
+    res
+      .status(500)
+      .json({ message: 'An error occurred while fetching email details.' });
+  }
+};
