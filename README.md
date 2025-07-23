@@ -16,6 +16,7 @@ This repository contains the backend server for **PingBack**, a simple yet power
 - **Secure User Authentication:** Google OAuth 2.0 for seamless and secure user sign-in.
 - **JWT-Based Sessions:** Uses JSON Web Tokens for stateless and secure API authentication.
 - **Email Tracking:** Injects a 1x1 tracking pixel into outgoing emails to monitor opens.
+- **AI-Powered Suggestions:** Leverages the Google Gemini API to generate compelling subject lines based on the email body.
 - **Analytics API:** Endpoints to retrieve a list of sent emails and their open counts.
 - **Robust Security:** Includes rate limiting to prevent abuse and input validation with Zod.
 - **Persistent Database:** Uses Docker Compose for a consistent and persistent local PostgreSQL database.
@@ -27,6 +28,7 @@ This repository contains the backend server for **PingBack**, a simple yet power
 - **Runtime:** [Node.js](https://nodejs.org/)
 - **Framework:** [Express.js](https://expressjs.com/)
 - **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **AI:** [Google Gemini](https://gemini.google.com/app/)
 - **Database:** [PostgreSQL](https://www.postgresql.org/)
 - **ORM:** [Prisma](https://www.prisma.io/)
 - **Authentication:** [Passport.js](http://www.passportjs.org/) (Google OAuth 2.0 Strategy)
@@ -97,6 +99,7 @@ All API routes are prefixed with `/api`.
 
 | Method | Route                   | Protection | Description                                        |
 | :----- | :---------------------- | :--------- | :------------------------------------------------- |
+| `POST` | `/ai/generate-subject`  | Private    | Generates subject line suggestions using AI.
 | `GET`  | `/auth/google`          | Public     | Initiates the Google OAuth 2.0 sign-in flow.       |
 | `GET`  | `/auth/google/callback` | Public     | Callback URL for Google to redirect to after auth. |
 | `POST` | `/email/send`           | Private    | Sends a new tracked email.                         |
@@ -120,7 +123,7 @@ The following variables are required for the application to run. They should be 
 | `GMAIL_APP_PASSWORD`   | The 16-character Google App Password for Nodemailer.                  |
 | `BACKEND_URL`          | The public URL of the backend (for tracking pixels).                  |
 | `FRONTEND_URL`         | The public URL of the frontend (for auth redirects).                  |
-
+| `GOOGLE_AI_API_KEY`    | Your Google gemini API key                                            |
 ---
 
 ## 🤝 Contributing

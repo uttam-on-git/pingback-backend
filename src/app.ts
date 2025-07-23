@@ -5,6 +5,7 @@ import './config/passport-setup';
 import emailRoutes from './api/email/email.route';
 import authRoutes from './api/auth/auth.route';
 import rateLimit from 'express-rate-limit';
+import aiRoutes from './api/ai/ai.route';
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use('/api', limiter);
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(passport.initialize()); // initialize passport
+app.use('/api/ai', aiRoutes);
 
 //API routes
 app.use('/api/email', emailRoutes);
