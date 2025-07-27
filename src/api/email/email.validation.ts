@@ -2,9 +2,7 @@ import { z } from 'zod';
 
 export const sendEmailSchema = z.object({
   body: z.object({
-    recipient: z
-      .string({ error: 'Recipient must be a string' })
-      .email({ error: 'Invalid email address' }),
+    recipient: z.email({ error: 'Invalid email address' }),
     subject: z
       .string({ error: 'Subject must be a string' })
       .min(1, { error: 'Subject cannot be empty' }),

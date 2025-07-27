@@ -99,7 +99,7 @@ All API routes are prefixed with `/api`.
 
 | Method | Route                   | Protection | Description                                        |
 | :----- | :---------------------- | :--------- | :------------------------------------------------- |
-| `POST` | `/ai/generate-subject`  | Private    | Generates subject line suggestions using AI.
+| `POST` | `/ai/generate-subject`  | Private    | Generates subject line suggestions using AI.       |
 | `GET`  | `/auth/google`          | Public     | Initiates the Google OAuth 2.0 sign-in flow.       |
 | `GET`  | `/auth/google/callback` | Public     | Callback URL for Google to redirect to after auth. |
 | `POST` | `/email/send`           | Private    | Sends a new tracked email.                         |
@@ -124,6 +124,7 @@ The following variables are required for the application to run. They should be 
 | `BACKEND_URL`          | The public URL of the backend (for tracking pixels).                  |
 | `FRONTEND_URL`         | The public URL of the frontend (for auth redirects).                  |
 | `GOOGLE_AI_API_KEY`    | Your Google gemini API key                                            |
+
 ---
 
 ## 🤝 Contributing

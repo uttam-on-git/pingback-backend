@@ -11,7 +11,7 @@ const PIXEL_DATA = Buffer.from(
 export const trackEmailOpen = async (req: Request, res: Response) => {
   try {
     const { emailId } = req.params;
-    prisma.emailOpen
+    await prisma.emailOpen
       .create({
         data: {
           emailId: emailId,
