@@ -36,6 +36,8 @@ const corsOptions = {
   },
 };
 
+app.set(`'trust·proxy'`, 1);
+
 //middleware
 app.use('/api', limiter);
 app.use(cors(corsOptions));
