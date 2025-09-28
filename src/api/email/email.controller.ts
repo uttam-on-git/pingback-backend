@@ -1,8 +1,11 @@
 import { Response, Request } from 'express';
 import { PrismaClient } from '@prisma/client';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 const prisma = new PrismaClient();
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 const PIXEL_DATA = Buffer.from(
   'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
   'base64',
@@ -66,26 +69,14 @@ export const sendTrackedEmail = async (req: Request, res: Response) => {
     //inject pixel into the email body
     const emailBodyWithPixel = `${trackingPixelHtml}${body}`;
 
-    console.log('--- HTML being sent to Nodemailer ---');
+    console.log('--- HTML being sent to Resend ---');
     console.log(emailBodyWithPixel);
-    console.log('------------------------------------');
-
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASSWORD,
-      },
-      requireTLS: true,
-    });
+    console.log('---------------------------------');
 
     const sender = await prisma.user.findUnique({ where: { id: userId } });
 
-    // send the email
-    await transporter.sendMail({
-      from: `"${sender?.name || 'PingBack User'}" <${process.env.GMAIL_USER}>`,
+    await resend.emails.send({
+      from: `"${sender?.name || 'PingBack User'}" <onboarding@resend.dev>`,
       to: recipient,
       subject: subject,
       html: emailBodyWithPixel,
