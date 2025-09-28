@@ -71,10 +71,9 @@ export const sendTrackedEmail = async (req: Request, res: Response) => {
     console.log('------------------------------------');
 
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
+      service: 'gmail',
       auth: {
+        type: 'OAuth2',
         user: process.env.GMAIL_USER,
         pass: process.env.GMAIL_APP_PASSWORD,
       },

@@ -36,7 +36,7 @@ const corsOptions = {
   },
 };
 
-app.set(`'trust·proxy'`, 1);
+app.set('trust proxy', 1);
 
 //middleware
 app.use('/api', limiter);
