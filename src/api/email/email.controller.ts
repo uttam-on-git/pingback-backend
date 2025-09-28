@@ -1,10 +1,15 @@
 import { Response, Request } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { Resend } from 'resend';
+import { google } from 'googleapis';
+import { encode } from 'js-base64';
 
 const prisma = new PrismaClient();
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const oAuth2Client = new google.auth.OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  '/api/auth/google/callback',
+);
 
 const PIXEL_DATA = Buffer.from(
   'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
@@ -53,38 +58,54 @@ export const sendTrackedEmail = async (req: Request, res: Response) => {
   }
 
   try {
-    // create a record for the email in our database
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.refreshToken) {
+      return res.status(401).json({
+        message:
+          'User is not properly authenticated or has no permission to send email.',
+      });
+    }
+
+    oAuth2Client.setCredentials({ refresh_token: user.refreshToken });
+
     const trackedEmail = await prisma.trackedEmail.create({
-      data: {
-        userId: userId,
-        subject,
-        recipient,
-      },
+      data: { userId: userId, subject, recipient },
     });
 
-    // construct the tracking pixel URL
     const trackingPixelUrl = `${process.env.BACKEND_URL}/api/email/track/${trackedEmail.id}`;
     const trackingPixelHtml = `<img src="${trackingPixelUrl}" width="1" height="1" style="display:none;" />`;
-
-    //inject pixel into the email body
     const emailBodyWithPixel = `${trackingPixelHtml}${body}`;
 
-    console.log('--- HTML being sent to Resend ---');
-    console.log(emailBodyWithPixel);
-    console.log('---------------------------------');
+    const emailLines = [
+      `From: "${user.name}" <${user.email}>`,
+      `To: ${recipient}`,
+      'Content-Type: text/html; charset=utf-8',
+      'MIME-Version: 1.0',
+      `Subject: ${subject}`,
+      '',
+      emailBodyWithPixel,
+    ];
+    const email = emailLines.join('\r\n');
 
-    const sender = await prisma.user.findUnique({ where: { id: userId } });
+    const base64EncodedEmail = encode(email, true);
 
-    await resend.emails.send({
-      from: `"${sender?.name || 'PingBack User'}" <onboarding@resend.dev>`,
-      to: recipient,
-      subject: subject,
-      html: emailBodyWithPixel,
+    const gmail = google.gmail({ version: 'v1', auth: oAuth2Client });
+    await gmail.users.messages.send({
+      userId: 'me',
+      requestBody: {
+        raw: base64EncodedEmail,
+      },
     });
 
     res.status(200).json({ message: 'Email sent and is now being tracked.' });
   } catch (error: unknown) {
-    console.error('Error sending email:', error);
+    // Safely log the error
+    if (error instanceof Error) {
+      console.error('Error sending email:', error.message);
+    } else {
+      console.error('An unknown error occurred while sending email:', error);
+    }
+
     res
       .status(500)
       .json({ message: 'An error occurred while sending the email.' });
@@ -98,7 +119,6 @@ export const getSentEmails = async (req: Request, res: Response) => {
       where: {
         userId: userId,
       },
-      // count of the related 'opens' for each email
       include: {
         _count: {
           select: { opens: true },

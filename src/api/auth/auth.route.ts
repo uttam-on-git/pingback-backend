@@ -6,14 +6,18 @@ const router = Router();
 
 router.get(
   '/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] }),
+  passport.authenticate('google', {
+    scope: ['profile', 'email', 'https://www.googleapis.com/auth/gmail.send'],
+    accessType: 'offline',
+    prompt: 'consent',
+  }),
 );
 
 router.get(
   '/google/callback',
   passport.authenticate('google', {
-    failureRedirect: '/login-failed', // A route to redirect to on failure
-    session: false, // We are using JWTs, not sessions
+    failureRedirect: '/login-failed',
+    session: false,
   }),
   generateToken,
 );
