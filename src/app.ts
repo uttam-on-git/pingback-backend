@@ -6,6 +6,7 @@ import emailRoutes from './api/email/email.route';
 import authRoutes from './api/auth/auth.route';
 import rateLimit from 'express-rate-limit';
 import aiRoutes from './api/ai/ai.route';
+import helmet from 'helmet';
 
 const app = express();
 
@@ -36,6 +37,7 @@ const corsOptions = {
   },
 };
 
+app.use(helmet());
 app.set('trust proxy', 1);
 
 //middleware
